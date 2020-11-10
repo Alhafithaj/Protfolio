@@ -1,0 +1,151 @@
+---
+title: 'Portfolio Builder Exercise #1'
+author: "Abdulmohsen Alhafith"
+date: "11/3/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## 
+```{r}
+# Helper packages
+library(dplyr)     # for data manipulation
+library(ggplot2)   # for awesome graphics
+library(tidyverse)
+library(forcats)
+
+# Modeling process packages
+library(rsample)   # for resampling procedures
+library(caret)     # for resampling and model training
+library(h2o)       # for resampling and model training
+library(recipes)  # for feature engineering tasks
+#library(nycflight)
+library(readr)
+library(readxl)
+
+library(glmnet)
+```
+```{r}
+library(e1071)
+```
+
+```{r}
+# h2o set-up 
+h2o.no_progress()  # turn off h2o progress bars
+#h2o.init()         # launch h2o
+```
+
+
+
+
+
+```{r }
+boulton <- read_excel("data/BOULTON.xlsx")
+boulton.isna().sum()
+
+```
+
+
+```{r  }
+boultontt <- na.omit(boulton) #this one delete every row
+
+
+
+```
+
+```{r}
+GASSM <- boulton$ALLOC_GAS_VOL_SM3
+GASMMSCF <- boulton$ALLOC_GAS_VOL_MMSCF
+
+H2O_bbls <- boulton$ALLOC_H2O_VOL_BBLS
+H2O_M3  <- boulton$ALLOC_H2O_VOL_M3
+
+oil_bbls <-boulton$ALLOC_OIL_VOL_BBLS
+oil_sm3 <- boulton$ALLOC_OIL_VOL_SM3
+
+
+
+```
+
+```{r}
+gas <- data.frame(GASSM,GASMMSCF)  #,H2O_bbls,H2O_M3,,oil_bbls,oil_sm3
+gas <- na.omit(gas)
+```
+
+
+```{r}
+y <- dnorm(gas$GASSM, mean = mean(gas$GASSM), sd = sd(gas$GASSM))
+plot(gas$GASSM,y)
+
+```
+```{r}
+z <- dnorm(gas$GASMMSCF, mean = mean(gas$GASMMSCF), sd = sd(gas$GASMMSCF))
+plot(gas$GASMMSCF,z)
+
+```
+
+
+```{r Apply linear regression}
+fit = plot(gas$GASMMSCF, gas$GASSM, alpha = 0.2, weights = c(rep(1,50),rep(2,50)), nlambda = 20)
+print(fit)
+# ther is linear relationship 
+
+```
+
+
+```{r}l
+
+```
+
+```{r}
+set.seed(123)
+gas_split <- initial_split(gas, prop = .7)
+gas_train <- training(gas_split)
+gas_test  <- testing(gas_split)
+
+```
+
+```{r}
+lm_lm    <- lm(GASSM ~ GASMMSCF, data = gas_train)
+# it seem it is the same data jjust changing the unit 
+```
+
+
+```{r}
+gas_oil <- data.frame(GASSM,oil_bbls)  #,H2O_bbls,H2O_M3,,oil_bbls,oil_sm3,GASMMSCF
+gas_oil <- na.omit(gas_oil)
+```
+
+
+```{r}
+gas_h2o <- data.frame(GASSM,H2O_M3)  #,H2O_bbls,H2O_M3,,oil_bbls,oil_sm3,GASMMSCF
+gas_h2o <- na.omit(gas_h2o)
+
+
+```
+
+
+```{r}
+
+i <- c(NA, 4,5,6)
+j <- na.omit(i)
+
+```
+
+
+
+```{r}
+gas_h2o <- data.frame(GASSM,H2O_M3)  #,H2O_bbls,H2O_M3,,oil_bbls,oil_sm3,GASMMSCF
+gas_h2o <- na.omit(gas_h2o)
+
+```
+
+
+
+
+```{r}
+
+```
+
